@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Duda Sá</title>
-<meta name="description" content="Duda Sá, cantora e compositora. Novo single Superstar em 30 de novembro de 2026.">
+<meta name="description" content="Duda Sá, cantora e compositora. Novo single Superstar em 20 de novembro de 2026.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@200;300;400&family=Jost:ital,wght@0,300;0,400;0,500;1,300&family=Yellowtail&display=swap">
@@ -292,7 +292,7 @@ footer .sig { font-family: var(--body); font-style: normal; font-weight: 300; }
 
 <div class="notice">
   <div class="wrap">
-    <a href="#superstar">Superstar · novo single · 30.11</a>
+    <a href="#superstar">Superstar · novo single · 20.11</a>
     <span aria-hidden="true">✦</span>
     <span>faltam <b id="nb-d">--</b> dias</span>
   </div>
@@ -347,7 +347,7 @@ footer .sig { font-family: var(--body); font-style: normal; font-weight: 300; }
       <div class="single-text">
         <p class="eyebrow">Novo single</p>
         <h2>Superstar</h2>
-        <p class="date">30 de novembro de 2026</p>
+        <p class="date">20 de novembro de 2026</p>
         <div id="countWrap">
           <div class="count" aria-live="off">
             <div><b id="cd-d">--</b><span>dias</span></div>
@@ -614,8 +614,8 @@ footer .sig { font-family: var(--body); font-style: normal; font-weight: 300; }
   };
   if (!still) requestAnimationFrame(drift);
 
-  // Contagem para Superstar (30/11/2026, meia-noite em Brasília).
-  const release = new Date('2026-11-30T00:00:00-03:00').getTime();
+  // Contagem para Superstar (20/11/2026, meia-noite em Brasília).
+  const release = new Date('2026-11-20T00:00:00-03:00').getTime();
   const pad = (n) => String(n).padStart(2, '0');
   const tick = () => {
     const left = release - Date.now();
@@ -694,6 +694,7 @@ footer .sig { font-family: var(--body); font-style: normal; font-weight: 300; }
   const morpho = document.getElementById('morpho');
   const aboutBox = document.querySelector('#sobre .about-text');
   const letterEl = document.querySelector('#sobre .letter');
+  const hasLetter = !!(morpho && letterEl);
   let bx = 0, by = 0, heading = 0, t = 0, near = null, flyOn = false, lastFly = performance.now();
   const orbit = () => {
     const L = letterEl.getBoundingClientRect(), B = aboutBox.getBoundingClientRect();
@@ -703,10 +704,12 @@ footer .sig { font-family: var(--body); font-style: normal; font-weight: 300; }
       y: cy + Math.sin(t * .22) * (L.height / 2 + 14) + Math.cos(t * 1.3) * 8
     };
   };
-  aboutBox.addEventListener('pointermove', (e) => { const B = aboutBox.getBoundingClientRect(); near = { x: e.clientX - B.left, y: e.clientY - B.top }; });
-  aboutBox.addEventListener('pointerleave', () => { near = null; });
-  new IntersectionObserver((en) => { flyOn = en[0].isIntersecting; }, { rootMargin: '100px' }).observe(aboutBox);
-  const start = orbit(); bx = start.x; by = start.y;
+  if (hasLetter) {
+    aboutBox.addEventListener('pointermove', (e) => { const B = aboutBox.getBoundingClientRect(); near = { x: e.clientX - B.left, y: e.clientY - B.top }; });
+    aboutBox.addEventListener('pointerleave', () => { near = null; });
+    new IntersectionObserver((en) => { flyOn = en[0].isIntersecting; }, { rootMargin: '100px' }).observe(aboutBox);
+    const start = orbit(); bx = start.x; by = start.y;
+  }
   const flyFrame = (now) => {
     const dt = Math.min(50, now - lastFly) / 1000; lastFly = now;
     if (flyOn) {
@@ -728,11 +731,13 @@ footer .sig { font-family: var(--body); font-style: normal; font-weight: 300; }
 
   if (still) {
     stars.forEach(s => drawStar(s.x, s.y, s.r, .8));
-    const L = letterEl.getBoundingClientRect(), B = aboutBox.getBoundingClientRect();
-    morpho.style.transform = `translate(${L.right - B.left - 30}px, ${L.top - B.top - 6}px) rotate(.3rad)`;
+    if (hasLetter) {
+      const L = letterEl.getBoundingClientRect(), B = aboutBox.getBoundingClientRect();
+      morpho.style.transform = `translate(${L.right - B.left - 30}px, ${L.top - B.top - 6}px) rotate(.3rad)`;
+    }
   } else {
     requestAnimationFrame(skyFrame);
-    requestAnimationFrame(flyFrame);
+    if (hasLetter) requestAnimationFrame(flyFrame);
   }
 
   // Galeria em tela cheia.
